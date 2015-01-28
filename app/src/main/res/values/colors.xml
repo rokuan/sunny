@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_amber">#FFDF00</color>
+    <color name="amber">#FFBF00</color>
+    <color name="dark_amber">#C37F00</color>
+</resources>
