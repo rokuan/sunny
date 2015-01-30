@@ -11,9 +11,9 @@ import sunnyweather.rokuan.com.sunny.activities.HomeActivity;
  * Created by Christophe on 27/01/2015.
  */
 public abstract class SunnyFragment extends Fragment {
-    public static final int HOME_FRAGMENT = 0;
-    public static final int LOCATION_FRAGMENT = 1;
-    public static final int MAP_FRAGMENT = 2;
+    public static final int HOME_FRAGMENT = 1;
+    public static final int LOCATION_FRAGMENT = 2;
+    public static final int MAP_FRAGMENT = 3;
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 

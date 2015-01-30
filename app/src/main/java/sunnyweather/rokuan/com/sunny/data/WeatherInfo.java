@@ -15,13 +15,14 @@ import sunnyweather.rokuan.com.sunny.openweatherapi.OpenWeatherAPI;
  * Created by Christophe on 23/01/2015.
  */
 public class WeatherInfo {
-    private String place;
+    private Place place;
     private double temperature;
     private double humidity;
     private double pressure;
+    private double speed;
     private Date date;
-    private Time sunrise;
-    private Time sunset;
+    private Date sunrise;
+    private Date sunset;
     private Bitmap weatherImage;
     private String weatherDescription;
 
@@ -41,26 +42,20 @@ public class WeatherInfo {
         info.pressure = main.getDouble("pressure");
         info.humidity = main.getInt("humidity");
 
+        info.speed = json.getJSONObject("wind").getInt("speed");
+
         info.weatherDescription = weather.getString("description");
         info.weatherImage = OpenWeatherAPI.getIcon(weather.getString("icon"));
 
         try{
             JSONObject sys = json.getJSONObject("sys");
-            info.sunrise = new Time();
-            info.sunrise.set(sys.getLong("sunrise"));
-            info.sunset = new Time();
-            info.sunset.set(sys.getLong("sunset"));
+            info.sunrise = new Date(sys.getLong("sunrise") * 1000);
+            info.sunset = new Date(sys.getLong("sunset") * 1000);
         } catch (Exception e){
             Log.e("Sunny - Weather (WInfo JSON)", e.getMessage());
         }
 
         return info;
-    }
-
-
-
-    public String getPlace() {
-        return place;
     }
 
     public double getTemperature() {
@@ -80,11 +75,11 @@ public class WeatherInfo {
         return date;
     }
 
-    public Time getSunrise() {
+    public Date getSunrise() {
         return sunrise;
     }
 
-    public Time getSunset() {
+    public Date getSunset() {
         return sunset;
     }
 
@@ -94,5 +89,17 @@ public class WeatherInfo {
 
     public String getWeatherDescription() {
         return weatherDescription;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
+    public double getSpeed() {
+        return speed;
     }
 }

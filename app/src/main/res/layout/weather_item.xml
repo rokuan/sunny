@@ -11,14 +11,15 @@
         android:layout_height="200dp"
         android:layout_margin="10px"
         card_view:cardCornerRadius="4dp">
-        <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:id="@+id/weather_item_frame_content" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
             <FrameLayout
                 android:id="@+id/weather_item_top_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
                 android:layout_weight="1">
-                <ImageView android:scaleType="fitXY" android:src="@drawable/paris" android:layout_width="match_parent" android:layout_height="match_parent" />
+                <ImageView android:id="@+id/weather_item_image" android:scaleType="fitXY" android:src="@drawable/paris" android:layout_width="match_parent" android:layout_height="match_parent" />
                 <TextView
+                    android:id="@+id/weather_item_temperature"
                     android:textColor="#FFFFFF"
                     android:text="15°C"
                     android:padding="20px"
@@ -26,41 +27,100 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
-                    android:textColor="#FFFFFF" android:textSize="24dp" android:padding="20px" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:gravity="right" android:text="Paris, France" />
+                    android:id="@+id/weather_item_name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24dp"
+                    android:padding="20px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="right"
+                    android:text="Paris, France" />
             </FrameLayout>
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#7F7F7F" />
             <TableLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:stretchColumns="1,3">
                 <TableRow android:layout_height="0dp" android:layout_weight="1" android:gravity="center">
                     <TextView android:padding="10px" android:text="Pressure" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <TextView android:padding="10px" android:text="1050p" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <TextView android:padding="10px" android:text="Vent" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                    <TextView android:padding="10px" android:text="30Km/H" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <TextView android:id="@+id/weather_item_pressure" android:padding="10px" android:text="1050p" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <TextView android:padding="10px" android:text="Wind" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    <TextView android:id="@+id/weather_item_wind" android:padding="10px" android:text="30Km/H" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                 </TableRow>
                 <TableRow android:layout_height="0dp" android:layout_weight="1">
-                    <LinearLayout android:orientation="horizontal" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_span="2">
-                        <ImageView
-                            android:src="@drawable/ic_launcher"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:text="05:38"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout android:orientation="horizontal" android:gravity="center" android:layout_column="2" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_span="2">
-                        <TextView
-                            android:text="18:42"
-                            android:gravity="right"
+                    <LinearLayout android:layout_span="4" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <LinearLayout android:orientation="horizontal" android:gravity="left|center_vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_span="2">
+                            <ImageView
+                                android:src="@drawable/ic_launcher"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/weather_item_sunrise"
+                                android:text="05:38"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:gravity="center"
                             android:layout_width="0dip"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content" />
-                        <ImageView
-                            android:src="@drawable/ic_launcher"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+                            <ImageButton
+                                android:id="@+id/weather_item_refresh"
+                                android:src="@android:drawable/ic_popup_sync"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout android:orientation="horizontal" android:layout_gravity="right" android:gravity="right|center_vertical" android:layout_column="2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_span="2">
+                            <TextView
+                                android:id="@+id/weather_item_sunset"
+                                android:text="18:42"
+                                android:gravity="right"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <ImageView
+                                android:src="@drawable/ic_launcher"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
                     </LinearLayout>
                 </TableRow>
             </TableLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/weather_item_frame_no_data"
+            android:visibility="invisible"
+            android:background="#C3C3C3"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:text="No data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageButton
+                android:id="@+id/weather_item_data_refresh"
+                android:src="@android:drawable/ic_popup_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/weather_item_frame_loading"
+            android:visibility="invisible"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:padding="10px"
+                android:text="Fetching data ..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ProgressBar
+                android:indeterminate="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

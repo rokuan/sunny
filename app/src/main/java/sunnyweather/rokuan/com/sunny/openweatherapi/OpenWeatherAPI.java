@@ -73,7 +73,7 @@ public class OpenWeatherAPI {
     }
 
     public static List<Place> queryPlaces(Context context, String name){
-        List<Place> results = null;
+        List<Place> results = new ArrayList<Place>();
         JSONObject jsonResults = getJSON(context, String.format(PLACE_NAME_QUERY, name));
 
         if(jsonResults != null){
@@ -87,7 +87,7 @@ public class OpenWeatherAPI {
                 }
             } catch (JSONException e) {
                 Log.e("Sunny - Weather (Place query)", e.getMessage());
-                return null;
+                return results;
             }
         }
 
