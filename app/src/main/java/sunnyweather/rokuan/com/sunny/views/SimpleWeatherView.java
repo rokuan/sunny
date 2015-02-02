@@ -9,11 +9,14 @@ import android.widget.TextView;
 import sunnyweather.rokuan.com.sunny.R;
 import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.utils.Format;
 
 /**
  * Created by Christophe on 25/01/2015.
  */
 public class SimpleWeatherView extends WeatherView {
+    private ForecastInfo info;
+
     private TextView temperature;
     private TextView date;
     private ImageView icon;
@@ -28,17 +31,19 @@ public class SimpleWeatherView extends WeatherView {
         initLayout();
     }
 
-    @Override
+    /*@Override
     public void setWeatherContent(WeatherInfo wInfo) {
-        temperature.setText(wInfo.getTemperature() + "°C");
-        date.setText(dateFormat.format(wInfo.getDate()));
+        temperature.setText(Format.formatTemperature(wInfo.getTemperature()) + "°C");
+        date.setText(Format.dateFormat.format(wInfo.getDate()));
         icon.setImageBitmap(wInfo.getWeatherImage());
-    }
+    }*/
 
     @Override
     public void setForecastContent(ForecastInfo fInfo) {
-        temperature.setText(fInfo.getTemperature() + "°C");
-        date.setText(dateFormat.format(fInfo.getDate()));
+        info = fInfo;
+
+        temperature.setText(Format.formatTemperature(fInfo.getTemperature()) + "°C");
+        date.setText(Format.dateFormat.format(fInfo.getDate()));
         icon.setImageBitmap(fInfo.getWeatherImage());
     }
 
@@ -49,5 +54,9 @@ public class SimpleWeatherView extends WeatherView {
         temperature = (TextView)this.findViewById(R.id.simple_weather_temperature);
         date = (TextView)this.findViewById(R.id.simple_weather_date);
         icon = (ImageView)this.findViewById(R.id.simple_weather_icon);
+    }
+
+    public ForecastInfo getForecastContent() {
+        return info;
     }
 }

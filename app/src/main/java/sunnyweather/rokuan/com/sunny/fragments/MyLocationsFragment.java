@@ -4,27 +4,30 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import sunnyweather.rokuan.com.sunny.R;
 import sunnyweather.rokuan.com.sunny.data.Place;
-import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
 import sunnyweather.rokuan.com.sunny.db.SunnySQLiteOpenHelper;
-import sunnyweather.rokuan.com.sunny.openweatherapi.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 import sunnyweather.rokuan.com.sunny.views.LocationWeatherView;
 
 /**
@@ -32,13 +35,10 @@ import sunnyweather.rokuan.com.sunny.views.LocationWeatherView;
  */
 public class MyLocationsFragment extends SunnyFragment {
     private AutoCompleteTextView searchBar;
-    private ArrayAdapter<Place> placesAdapter;
+    //private PlaceAdapter placesAdapter;
+    private PlaceSuggestionAdapter suggestionsAdapter;
     private ListView weatherList;
     private View mainView;
-
-    private Handler handler;
-    private AtomicInteger stamp;
-    private static final int TEXT_DELAY = 1000;
 
     private SunnySQLiteOpenHelper db;
 
@@ -46,7 +46,6 @@ public class MyLocationsFragment extends SunnyFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        handler = new Handler();
         db = new SunnySQLiteOpenHelper(this.getActivity());
 
         LayoutInflater inflater = (LayoutInflater)this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -55,98 +54,36 @@ public class MyLocationsFragment extends SunnyFragment {
         searchBar = (AutoCompleteTextView)mainView.findViewById(R.id.search_bar);
         weatherList = (ListView)mainView.findViewById(R.id.weather_list);
 
-        stamp = new AtomicInteger(0);
+        searchBar.setThreshold(3);
+        //searchBar.set
 
-        /*if(searchBar.getText().length() > 0) {
-            updateSearchResults();
-        }*/
-        updateSearchResults();
+        suggestionsAdapter = new PlaceSuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item);
+        suggestionsAdapter.setNotifyOnChange(true);
+        searchBar.setAdapter(suggestionsAdapter);
+
+        // TODO: retablir le contenu de la barre de recherche
+
         updateLocations();
 
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                updateSearchResults();
-            }
-        });
-
-        /*searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<Place> matchingPlaces = OpenWeatherAPI.queryPlaces(MyLocationsFragment.this.getActivity(), s.toString());
-                searchBar.setAdapter(new PlaceSuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item, matchingPlaces));
-                final String searchString = s.toString();
-
-                new Thread(new Runnable(){
-                   public void run(){
-                       List<Place> matchingPlaces = OpenWeatherAPI.queryPlaces(MyLocationsFragment.this.getActivity(), searchString.toString());
-                       setSearchResults(matchingPlaces);
-                   }
-                }).start();
-
-                /*Looper myLooper = Looper.myLooper();
-                Handler handler = new Handler(myLooper);
-                handler.post(new Runnable(){
-                    public void run(){
-                        List<Place> matchingPlaces = OpenWeatherAPI.queryPlaces(MyLocationsFragment.this.getActivity(), searchString.toString());
-                        setSearchResults(matchingPlaces);
-                    }
-                });
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
-
-        weatherList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*weatherList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO:
                 //displayWeather(id);
             }
-        });
-    }
-
-    private void updateSearchResults(){
-        if(searchBar.getText().length() > 2) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final List<Place> matchingPlaces = OpenWeatherAPI.queryPlaces(MyLocationsFragment.this.getActivity(), searchBar.getText().toString());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            searchBar.setAdapter(new PlaceSuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item, matchingPlaces));
-                        }
-                    });
-                }
-            }).start();
-        }
+        });*/
+        /*weatherList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
+            }
+        });*/
+        this.registerForContextMenu(weatherList);
     }
 
     private void updateLocations(){
-
-    }
-
-    private void setSearchResults(List<Place> results){
-        searchBar.setAdapter(new PlaceSuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item, results));
+        List<Place> cities = db.queryAllCities();
+        weatherList.setAdapter(new PlaceAdapter(this.getActivity(), R.layout.weather_item, cities));
     }
 
     @Override
@@ -156,19 +93,96 @@ public class MyLocationsFragment extends SunnyFragment {
     }
 
     @Override
-    public void refresh() {
-        List<Place> cities = db.queryAllCities();
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //super.onCreateContextMenu(menu, v, menuInfo);
+        Log.i("onCreateContextMenu", "entered");
 
+        if (v.getId() == R.id.weather_list) {
+            Log.i("onCreateContextMenu", "source: weather_list");
+            MenuInflater inflater = this.getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_location_item, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        //info.id
+        //info.position;
+
+        PlaceAdapter locationAdapter = (PlaceAdapter)weatherList.getAdapter();
+        Place p = locationAdapter.getItem(info.position);
+
+        switch (item.getItemId()) {
+            case R.id.delete_place:
+                db.deleteCity(p.getId());
+                locationAdapter.remove(p);
+                locationAdapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.move_place:
+                // TODO:
+                //info.targetView.startDrag();
+                return true;
+
+            default:
+                break;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void refresh() {
+        updateLocations();
     }
 
     class PlaceSuggestionAdapter extends ArrayAdapter<Place> {
         private LayoutInflater inflater;
         private SunnySQLiteOpenHelper db;
+        private List<Place> resultList = new ArrayList<>();
 
-        public PlaceSuggestionAdapter(Context context, int resource, List<Place> objects) {
-            super(context, resource, objects);
+        public PlaceSuggestionAdapter(Context context, int resource) {
+            super(context, resource);
             inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             db = new SunnySQLiteOpenHelper(context);
+        }
+
+        @Override
+        public int getCount() {
+            return resultList.size();
+        }
+
+        @Override
+        public Place getItem(int index) {
+            return resultList.get(index);
+        }
+
+        @Override
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        resultList = OpenWeatherAPI.queryPlaces(PlaceSuggestionAdapter.this.getContext(), constraint.toString());
+
+                        filterResults.values = resultList;
+                        filterResults.count = resultList.size();
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }};
+            return filter;
         }
 
         @Override
@@ -190,7 +204,7 @@ public class MyLocationsFragment extends SunnyFragment {
 
             final Place place = this.getItem(position);
             TextView placeName = (TextView)convertView.findViewById(R.id.place_item_name);
-            ImageButton addPlace = (ImageButton)convertView.findViewById(R.id.place_item_add);
+            final ImageButton addPlace = (ImageButton)convertView.findViewById(R.id.place_item_add);
 
             placeName.setText(place.getName());
 
@@ -201,7 +215,17 @@ public class MyLocationsFragment extends SunnyFragment {
                     @Override
                     public void onClick(View v) {
                         // TODO:
+                        //Toast.makeText(PlaceSuggestionAdapter.this.getContext(), "Adding place: " + place.getName(), Toast.LENGTH_SHORT).show();
                         db.addCity(place);
+                        addPlace.setVisibility(View.INVISIBLE);
+                        try{
+                            PlaceAdapter placeAdapter = (PlaceAdapter)MyLocationsFragment.this.weatherList.getAdapter();
+                            placeAdapter.add(place);
+                            placeAdapter.notifyDataSetChanged();
+                        }catch(Exception e){
+                            MyLocationsFragment.this.refresh();
+                        }
+                        //MyLocationsFragment.this.refresh();
                     }
                 });
             }
@@ -222,7 +246,9 @@ public class MyLocationsFragment extends SunnyFragment {
         public View getView(int position, View convertView, ViewGroup parent){
             if(convertView == null){
                 //convertView = inflater.inflate(R.layout.weather_item, parent, false);
-                convertView = new LocationWeatherView(this.getContext(), this.getItem(position));
+                LocationWeatherView locView = new LocationWeatherView(this.getContext(), this.getItem(position));
+                convertView = locView;
+                locView.refreshData();
             }
 
             return convertView;

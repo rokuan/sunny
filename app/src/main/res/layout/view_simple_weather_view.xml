@@ -9,36 +9,13 @@
     >
 
     <LinearLayout
-        android:layout_margin="5px"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
-            android:id="@+id/simple_weather_temperature"
-            android:gravity="center"
-            android:text="15°C"
-            android:textColor="@android:color/black"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/simple_weather_icon"
-            android:src="@drawable/ic_launcher"
-            android:layout_alignParentRight="true"
-            android:scaleType="fitCenter"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dip" />
-
-        <TextView
             android:id="@+id/simple_weather_date"
+            android:background="@color/light_amber"
             android:gravity="center"
             android:paddingTop="20px"
             android:paddingBottom="20px"
@@ -46,6 +23,30 @@
             android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:padding="10px"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/simple_weather_temperature"
+                android:gravity="center"
+                android:text="15°C"
+                android:textColor="@android:color/black"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/simple_weather_icon"
+            android:src="@drawable/ic_launcher"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="match_parent" />
+
+
         </LinearLayout>
     </LinearLayout>
 

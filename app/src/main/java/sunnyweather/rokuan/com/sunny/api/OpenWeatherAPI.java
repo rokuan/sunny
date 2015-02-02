@@ -1,5 +1,6 @@
-package sunnyweather.rokuan.com.sunny.openweatherapi;
+package sunnyweather.rokuan.com.sunny.api;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +23,7 @@ import sunnyweather.rokuan.com.sunny.R;
 import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.data.Place;
 import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.utils.Utils;
 
 /**
  * Created by Christophe on 24/01/2015.
@@ -31,7 +32,7 @@ public class OpenWeatherAPI {
     private static final String OPENWEATHER_API_ADDRESS = "http://api.openweathermap.org/data/2.5/";
     private static final String OPENWEATHER_ICON_ADDRESS = "http://openweathermap.org/img/w/%s.png";
 
-    private static final String PLACE_NAME_QUERY = OPENWEATHER_API_ADDRESS + "find?q=%s&type=like";
+    private static final String PLACE_NAME_QUERY = OPENWEATHER_API_ADDRESS + "find?q=%s&type=like&cnt=4";
     private static final String WEATHER_QUERY = OPENWEATHER_API_ADDRESS + "weather?id=%s";
     private static final String FORECAST_QUERY = OPENWEATHER_API_ADDRESS + "forecast/daily?id=%s&units=metric&cnt=%d";
     private static final String ICON_QUERY = OPENWEATHER_ICON_ADDRESS;
@@ -42,24 +43,7 @@ public class OpenWeatherAPI {
 
     //public static Bitmap getIcon(Context context, String iconName){
     public static Bitmap getIcon(String iconName){
-        Bitmap image = null;
-
-        try {
-            URL url = new URL(String.format(ICON_QUERY, iconName));
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            connection.setDoInput(true);
-            connection.connect();
-
-            InputStream input = connection.getInputStream();
-            image = BitmapFactory.decodeStream(input);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
+        return Utils.getBitmapFromURL(String.format(ICON_QUERY, iconName));
     }
 
     public static Long getPlaceId(Context context, String name){
@@ -130,6 +114,7 @@ public class OpenWeatherAPI {
 
     public static WeatherInfo getWeather(Context context, long placeId){
         JSONObject result = getJSON(context, String.format(WEATHER_QUERY, placeId));
+
         try {
             return WeatherInfo.buildFromJSON(result);
         } catch (JSONException e) {
@@ -138,38 +123,18 @@ public class OpenWeatherAPI {
     }
 
     private static JSONObject getJSON(Context context, String address){
+        ContentValues properties = new ContentValues();
+        properties.put("x-api-key", getApiKey(context));
+        JSONObject result = Utils.getJSON(address, properties);
+
         try {
-            URL url = new URL(address);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.addRequestProperty("x-api-key", getApiKey(context));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            StringBuilder json = new StringBuilder(1024);
-            String line;
-
-            while((line = reader.readLine()) != null) {
-                json.append(line);
-                //json.append("\n");
-            }
-
-            reader.close();
-
-            System.out.println(json.toString());
-
-            JSONObject data = new JSONObject(json.toString());
-
-            if(data.getInt("cod") != 200){
+            if (result.getInt("cod") != 200) {
                 return null;
             }
-
-            /*if(!data.getString("cod").equals("200")){
-                return null;
-            }*/
-
-            return data;
         }catch(Exception e){
-            e.printStackTrace();
             return null;
         }
+
+        return result;
     }
 }

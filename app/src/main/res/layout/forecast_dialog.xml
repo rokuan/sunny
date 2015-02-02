@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:background="@color/amber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/forecast_dialog_title"
+            android:text="Paris,FR (31 Janv.)"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:padding="20px"
+            android:singleLine="true"
+            />
+        <ImageButton
+            android:id="@+id/forecast_dialog_close"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="top|right" />
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="30px"
+            android:stretchColumns="1">
+
+            <!--
+            private Date date;
+            private double[] temperatures; //"temp":{"day":9.23, "min":4.91, "max":12.25, "night":4.91, "eve":9.99, "morn":6.34},
+            private double pressure; //"pressure":1024.93,
+            private double humidity; //"humidity":95,
+            private String weatherType;
+            private String weatherDescription;
+            private Bitmap weatherImage;
+            private double speed;
+            private double degree;
+            private double clouds;
+            private double rain;
+            -->
+            <TableRow android:padding="10px">
+                <TextView android:id="@+id/forecast_dialog_temperature" android:text="25°C" android:gravity="center" android:layout_span="2" android:layout_width="match_parent" />
+            </TableRow>
+            <TableRow>
+                <sunnyweather.rokuan.com.sunny.views.HeightSquareImageView android:id="@+id/forecast_dialog_icon" android:scaleType="fitCenter" android:layout_span="2" android:src="@drawable/ic_launcher" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="128px" />
+            </TableRow>
+            <TableRow>
+                <TextView android:id="@+id/forecast_dialog_description" android:text="Partiellement nuageux" android:gravity="center" android:layout_span="2" android:padding="10px" />
+            </TableRow>
+            <TableRow>
+                <LinearLayout android:padding="20px" android:orientation="horizontal" android:layout_span="2" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:gravity="center"
+                        android:layout_width="0dip"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:src="@drawable/ic_launcher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="64px" />
+                        <TextView
+                            android:id="@+id/forecast_dialog_sunrise"
+                            android:text="7:40"
+                            android:gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:layout_width="0dip"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:gravity="center"
+                            android:id="@+id/forecast_dialog_sunset"
+                            android:text="18:30"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <ImageView
+                            android:src="@drawable/ic_launcher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="64px" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Pressure" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/forecast_dialog_pressure" android:gravity="center" android:text="1040Pa" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Humidity" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/forecast_dialog_humidity" android:gravity="center" android:text="96%" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Wind" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:id="@+id/forecast_dialog_wind" android:gravity="center" android:text="10Km/H" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow>
+            <!-- <TableRow>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
+            </TableRow> -->
+        </TableLayout>
+    </ScrollView>
+</LinearLayout>

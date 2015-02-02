@@ -2,54 +2,50 @@ package sunnyweather.rokuan.com.sunny.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
 import sunnyweather.rokuan.com.sunny.R;
+import sunnyweather.rokuan.com.sunny.api.IPAPI;
 import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
-import sunnyweather.rokuan.com.sunny.openweatherapi.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.data.LocationInfo;
+import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.views.ForecastDialog;
 import sunnyweather.rokuan.com.sunny.views.WeatherView;
 
 /**
  * Created by Christophe on 27/01/2015.
  */
-public class HomeFragment extends SunnyFragment {
+public class HomeFragment extends SunnyFragment implements View.OnClickListener {
     private static final int REFRESH_TIMEOUT = 20000;
 
     private TextView locationText;
 
     private List<WeatherView> views;
+    private List<ForecastInfo> infos;
     private Handler handler;
 
     private View loadingView;
-    private Location currentLocation;
 
     private View mainView;
     private LayoutInflater inflater;
 
+    private MenuItem refreshButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -57,6 +53,7 @@ public class HomeFragment extends SunnyFragment {
 
         inflater = (LayoutInflater)this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.fragment_home, null);
+        loadingView = mainView.findViewById(R.id.loading_frame);
         views = new LinkedList<WeatherView>();
         locationText = (TextView)mainView.findViewById(R.id.current_location);
         handler = new Handler();
@@ -67,29 +64,77 @@ public class HomeFragment extends SunnyFragment {
             TableRow row = (TableRow) table.getChildAt(i);
 
             for (int j = 0; j < row.getChildCount(); j++) {
-                views.add((WeatherView) row.getChildAt(j));
+                WeatherView weatherView = (WeatherView) row.getChildAt(j);
+                weatherView.setOnClickListener(this);
+                views.add(weatherView);
             }
         }
 
-        loadingView = mainView.findViewById(R.id.loading_frame);
+        /*if(savedInstanceState == null || !savedInstanceState.containsKey("forecastData")){
+            // TODO: charger les donnees
+            refresh();
+        } else {
+
+        }*/
+        refresh();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Only show items in the action bar relevant to this screen
+        // if the drawer is not showing. Otherwise, let the drawer
+        // decide what to show in the action bar.
+        inflater.inflate(R.menu.home, menu);
+        refreshButton = menu.findItem(R.id.action_refresh);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id){
+            case R.id.action_refresh:
+                this.refresh();
+                return true;
+
+            case R.id.action_settings:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*@Override
+    public void onSaveInstanceState(Bundle bundle){
+        if(infos != null){
+            //bundle.putParcelableArray();
+        }
+    }*/
 
     private void startLoading(){
         // TODO:
-        /*if(updateButton != null) {
-            updateButton.setEnabled(false);
-        }*/
+        if(refreshButton != null) {
+            //refreshButton.setEnabled(false);
+            refreshButton.setVisible(false);
+        }
         loadingView.setVisibility(View.VISIBLE);
     }
 
-    private void endLoading(){
+    private void endLoading(boolean success){
+        // TODO: afficher des messages selon la reussite de l'operation
         loadingView.setVisibility(View.INVISIBLE);
-        /*if(updateButton != null) {
-            updateButton.setEnabled(true);
-        }*/
+        if(refreshButton != null) {
+            //refreshButton.setEnabled(true);
+            refreshButton.setVisible(true);
+        }
     }
 
     private void renderWeather(String place, List<ForecastInfo> results) {
+        infos = results;
         locationText.setText(place);
 
         for (int i = 0; i < results.size(); i++) {
@@ -105,79 +150,42 @@ public class HomeFragment extends SunnyFragment {
     }
 
     private void getLocation() {
-        Looper looper = Looper.myLooper();
-
-        currentLocation = null;
-
         new Thread(new Runnable(){
             @Override
             public void run(){
                 try {
-                    URL url = new URL("http://ipinfo.io/json");
-                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                    final LocationInfo lInfo = IPAPI.getLocation();
+                    final Activity activity = HomeFragment.this.getActivity();
+                    Long countryId = OpenWeatherAPI.getPlaceId(activity, lInfo.getPlaceCode());
 
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String line;
-                    StringBuilder jsonString = new StringBuilder();
-
-                    while((line = br.readLine()) != null){
-                        jsonString.append(line);
-                    }
-
-                    JSONObject json = new JSONObject(jsonString.toString());
-                    br.close();
-
-                    final String cityCode = json.getString("city") + "," + json.getString("country");
-                    String locationString = json.getString("loc");
-                    String[] locationFields = locationString.split(",");
-
-                    currentLocation = new Location("");
-                    currentLocation.setLatitude(Double.parseDouble(locationFields[0]));
-                    currentLocation.setLongitude(Double.parseDouble(locationFields[1]));
-
-                    //fetchWeather(cityCode);
-
-                    Activity activity = HomeFragment.this.getActivity();
-                    Long countryId = OpenWeatherAPI.getPlaceId(activity, cityCode);
-
-                    if(countryId == null){
+                    if (countryId == null) {
                         // TODO: afficher erreur etc
-                        endLoading();
-                        Toast.makeText(activity, "Unable to resolve location", Toast.LENGTH_SHORT).show();
+                        handler.post(new Runnable(){
+                            public void run(){
+                                endLoading(false);
+                                Toast.makeText(activity, "Unable to resolve location", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         return;
                     }
 
-                    //final List<ForecastInfo> results = OpenWeatherAPI.getWeekForecast(HomeActivity.this, 2988507);
                     final List<ForecastInfo> results = OpenWeatherAPI.getWeekForecast(activity, countryId);
 
                     handler.post(new Runnable() {
                         public void run() {
-                            renderWeather(cityCode, results);
-                            endLoading();
+                            renderWeather(lInfo.getPlaceCode(), results);
+                            endLoading(true);
                         }
                     });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }catch(Exception e){
+                    handler.post(new Runnable(){
+                        public void run(){
+                            endLoading(false);
+                        }
+                    });
                 }
             }
         }).start();
-
-        final Handler myHandler = new Handler(looper);
-        myHandler.postDelayed(new Runnable() {
-            public void run() {
-                myHandler.removeCallbacks(this);
-
-                if(currentLocation == null){
-                    // TODO: afficher une erreur etc
-                    Toast.makeText(HomeFragment.this.getActivity(), "Unable to retrieve location", Toast.LENGTH_LONG).show();
-                    endLoading();
-                }
-            }
-        }, REFRESH_TIMEOUT);
     }
 
     @Override
@@ -185,6 +193,7 @@ public class HomeFragment extends SunnyFragment {
                              Bundle savedInstanceState) {
         /*View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         return rootView;*/
+        this.setHasOptionsMenu(true);
         return mainView;
     }
 
@@ -198,5 +207,14 @@ public class HomeFragment extends SunnyFragment {
 
         startLoading();
         getLocation();
+    }
+
+    @Override
+    public void onClick(View v) {
+        try{
+            ForecastDialog.newInstance(((WeatherView)v).getForecastContent()).show(this.getActivity().getSupportFragmentManager(), "FORECAST_DLG");
+        } catch(Exception e){
+            return;
+        }
     }
 }

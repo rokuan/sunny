@@ -81,6 +81,12 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteCity(Long cityId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(tables[CITIES], CITY_ID + " = ?", new String[]{ cityId.toString() });
+        db.close();
+    }
+
     public boolean cityExists(Long cityId){
         SQLiteDatabase db = this.getReadableDatabase();
         boolean exists = false;

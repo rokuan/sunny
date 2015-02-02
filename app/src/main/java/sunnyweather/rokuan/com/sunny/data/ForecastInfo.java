@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-import sunnyweather.rokuan.com.sunny.openweatherapi.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 
 /**
  * Created by Christophe on 26/01/2015.
@@ -105,7 +105,7 @@ public class ForecastInfo {
     }
 
     public double getTemperature(){
-        return temperatures[TEMP_MIN];
+        return (temperatures[TEMP_MAX] + temperatures[TEMP_MIN])/2;
     }
 
     public double getMinTemperature(){

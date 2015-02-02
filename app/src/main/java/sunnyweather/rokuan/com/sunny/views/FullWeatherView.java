@@ -9,11 +9,14 @@ import android.widget.TextView;
 import sunnyweather.rokuan.com.sunny.R;
 import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.utils.Format;
 
 /**
  * Created by Christophe on 25/01/2015.
  */
 public class FullWeatherView extends WeatherView {
+    private ForecastInfo info;
+
     private TextView temperature;
     private TextView date;
     private ImageView icon;
@@ -33,18 +36,25 @@ public class FullWeatherView extends WeatherView {
         super(context, attrs, defStyleAttr);
     }*/
 
-    @Override
+    /*@Override
     public void setWeatherContent(WeatherInfo wInfo) {
-        temperature.setText(wInfo.getTemperature() + "°C");
-        date.setText(dateFormat.format(wInfo.getDate()));
+        temperature.setText(Format.formatTemperature(wInfo.getTemperature()) + "°C");
+        date.setText(Format.dateFormat.format(wInfo.getDate()));
         icon.setImageBitmap(wInfo.getWeatherImage());
-    }
+    }*/
 
     @Override
     public void setForecastContent(ForecastInfo fInfo) {
-        temperature.setText(fInfo.getMinTemperature() + " ~ " + fInfo.getMaxTemperature() + "°C");
-        date.setText(dateFormat.format(fInfo.getDate()));
+        info = fInfo;
+
+        temperature.setText(Format.formatTemperature(fInfo.getMinTemperature()) + " ~ " + Format.formatTemperature(fInfo.getMaxTemperature()) + "°C");
+        date.setText(Format.dateFormat.format(fInfo.getDate()));
         icon.setImageBitmap(fInfo.getWeatherImage());
+    }
+
+    @Override
+    public ForecastInfo getForecastContent(){
+        return info;
     }
 
     private void initLayout(){
@@ -55,5 +65,4 @@ public class FullWeatherView extends WeatherView {
         date = (TextView)this.findViewById(R.id.full_weather_date);
         icon = (ImageView)this.findViewById(R.id.full_weather_icon);
     }
-
 }

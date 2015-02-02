@@ -13,7 +13,7 @@ import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
  * Created by Christophe on 23/01/2015.
  */
 public abstract class WeatherView extends RelativeLayout {
-    protected static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
+    //protected static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
     public WeatherView(Context context) {
         super(context);
@@ -27,6 +27,7 @@ public abstract class WeatherView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
     }*/
 
-    public abstract void setWeatherContent(WeatherInfo wInfo);
+    //public abstract void setWeatherContent(WeatherInfo wInfo);
     public abstract void setForecastContent(ForecastInfo fInfo);
+    public abstract ForecastInfo getForecastContent();
 }

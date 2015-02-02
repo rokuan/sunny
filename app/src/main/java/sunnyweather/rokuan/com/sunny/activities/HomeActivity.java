@@ -87,7 +87,7 @@ public class HomeActivity extends ActionBarActivity
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
@@ -114,7 +114,7 @@ public class HomeActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -135,6 +135,6 @@ public class HomeActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
 }

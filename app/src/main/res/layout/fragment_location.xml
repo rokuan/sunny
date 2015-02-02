@@ -9,8 +9,6 @@
         android:layout_height="wrap_content">
         <AutoCompleteTextView
             android:id="@+id/search_bar"
-            android:divider="@color/dark_amber"
-            android:dividerHeight="1dp"
             android:layout_marginLeft="10px"
             android:layout_marginRight="10px"
             android:singleLine="true"

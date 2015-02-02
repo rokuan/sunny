@@ -89,7 +89,7 @@
             android:id="@+id/weather_item_frame_no_data"
             android:visibility="invisible"
             android:background="#C3C3C3"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

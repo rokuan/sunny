@@ -1,7 +1,6 @@
 package sunnyweather.rokuan.com.sunny.data;
 
 import android.graphics.Bitmap;
-import android.text.format.Time;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -9,7 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-import sunnyweather.rokuan.com.sunny.openweatherapi.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 
 /**
  * Created by Christophe on 23/01/2015.
@@ -36,6 +35,7 @@ public class WeatherInfo {
         JSONObject main = json.getJSONObject("main");
         JSONObject weather = json.getJSONArray("weather").getJSONObject(0);
 
+        info.place = Place.buildFromJSON(json);
         info.date = new Date(json.getLong("dt") * 1000);
 
         info.temperature = main.getDouble("temp");

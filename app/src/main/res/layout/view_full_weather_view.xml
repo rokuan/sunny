@@ -8,44 +8,52 @@
     card_view:cardBackgroundColor="@color/amber"
     >
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:layout_margin="5px"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"> -->
+    <LinearLayout
+        android:orientation="vertical"
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
-            android:id="@+id/full_weather_temperature"
+            android:id="@+id/full_weather_date"
+            android:background="@color/light_amber"
             android:gravity="center"
-            android:text="15°C"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:text="23 Dec"
             android:textColor="@android:color/black"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dip"
-            android:layout_weight="1"
+            android:padding="30px"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/full_weather_temperature"
+                android:gravity="center"
+                android:text="15°C"
+                android:textColor="@android:color/black"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent" />
             <ImageView
                 android:id="@+id/full_weather_icon"
                 android:src="@drawable/ic_launcher"
                 android:layout_alignParentRight="true"
                 android:scaleType="fitCenter"
                 android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="0dip" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
 
-            <TextView
-                android:id="@+id/full_weather_date"
-                android:gravity="center"
-                android:paddingTop="20px"
-                android:paddingBottom="20px"
-                android:text="23 Dec"
-                android:textColor="@android:color/black"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 
