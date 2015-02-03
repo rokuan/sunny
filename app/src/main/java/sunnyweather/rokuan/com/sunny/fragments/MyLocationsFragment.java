@@ -244,12 +244,12 @@ public class MyLocationsFragment extends SunnyFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent){
-            if(convertView == null){
+            //if(convertView == null){
                 //convertView = inflater.inflate(R.layout.weather_item, parent, false);
                 LocationWeatherView locView = new LocationWeatherView(this.getContext(), this.getItem(position));
                 convertView = locView;
                 locView.refreshData();
-            }
+            //}
 
             return convertView;
         }
