@@ -28,9 +28,11 @@
         parent="Widget.AppCompat.ActionBar">
         <item tools:targetApi="11" name="android:titleTextStyle">@style/ActionBarColor</item>
         <item name="android:background">@color/dark_amber</item>
+        <item tools:targetApi="11" name="android:logo">@drawable/action_bar_logo</item>
 
         <item name="titleTextStyle">@style/ActionBarColor</item>
         <item name="background">@color/dark_amber</item>
+        <item name="logo">@drawable/action_bar_logo</item>
     </style>
     <style name="ActionBarColor" parent="@android:style/TextAppearance">
         <item name="android:textColor">#FFFFFF</item>

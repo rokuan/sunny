@@ -7,17 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
 
-    <!-- Weather Widget -->
-    <receiver android:name=".SunnyAppWidgetProvider" >
-        <intent-filter>
-            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-        </intent-filter>
-
-        <meta-data
-            android:name="android.appwidget.provider"
-            android:resource="@xml/sunny_appwidget_info" />
-    </receiver>
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -53,6 +42,16 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home" >
         </activity> -->
+        <!-- Weather Widget -->
+        <receiver android:name=".appwidget.SunnyAppWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sunny_appwidget_info" />
+        </receiver>
     </application>
 
 </manifest>
