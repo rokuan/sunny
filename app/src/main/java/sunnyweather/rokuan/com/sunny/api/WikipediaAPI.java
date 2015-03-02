@@ -14,17 +14,28 @@ import java.util.Set;
 import sunnyweather.rokuan.com.sunny.utils.Utils;
 
 /**
- * Created by LEBEAU Christophe on 31/01/2015.
+ * Class with methods to get data from the Wikipedia API
  */
 public class WikipediaAPI {
     private static final String WIKIPEDIA_API_ADDRESS = "http://en.wikipedia.org/w/api.php?action=query&titles=%s&prop=pageimages&format=json&pithumbsize=%d";
 
     private static final int DEFAULT_IMAGE_WIDTH = 480;
 
+    /**
+     * Fetches an image for a given item title
+     * @param title the title
+     * @return a bitmap of the image, null when none or if an error occurred
+     */
     public static Bitmap getTitleImage(String title){
         return getTitleImage(title, DEFAULT_IMAGE_WIDTH);
     }
 
+    /**
+     * Fetches an image for a given item name
+     * @param title the title
+     * @param width the image width
+     * @return a bitmap of the image, null if an error occurred or none was found
+     */
     public static Bitmap getTitleImage(String title, int width){
         try {
             JSONObject result = Utils.getJSON(String.format(WIKIPEDIA_API_ADDRESS, title, width), null);

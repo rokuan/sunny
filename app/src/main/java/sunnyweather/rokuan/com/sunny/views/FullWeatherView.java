@@ -12,7 +12,7 @@ import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
 import sunnyweather.rokuan.com.sunny.utils.Format;
 
 /**
- * Created by Christophe on 25/01/2015.
+ * A view that tends to display an important part of the whole weather data
  */
 public class FullWeatherView extends WeatherView {
     private ForecastInfo info;

@@ -25,6 +25,11 @@ public class Utils {
     private static final int CONNECT_TIMEOUT = 10000;
     private static final int READ_TIMEOUT = 10000;
 
+    /**
+     * Checks whether or not the network is available
+     * @param context the android context to be used
+     * @return true if network is currently available, false otherwise
+     */
     public static boolean isNetworkAvailable(Context context){
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -32,6 +37,11 @@ public class Utils {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    /**
+     * Converts an address pointing to an image into a Bitmap
+     * @param address the address leading to the image
+     * @return a bitmap obtained from the address or null if an error occurred
+     */
     public static Bitmap getBitmapFromURL(String address){
         Bitmap image = null;
 
@@ -53,6 +63,12 @@ public class Utils {
         return image;
     }
 
+    /**
+     * Gets a JSONObject built from the data retrieved from the HTTP address
+     * @param address the HTTP address
+     * @param properties the request properties to be added
+     * @return a JSONObject build from the result
+     */
     public static JSONObject getJSON(String address, ContentValues properties){
         HttpURLConnection connection = null;
         URL url;

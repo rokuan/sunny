@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import sunnyweather.rokuan.com.sunny.R;
 
 /**
- * Created by Christophe on 27/01/2015.
+ * A fragment that displays weather data about a whole country
  */
 public class MapFragment extends SunnyFragment {
     @Override
@@ -19,6 +19,6 @@ public class MapFragment extends SunnyFragment {
 
     @Override
     public void refresh() {
-
+        // TODO:
     }
 }

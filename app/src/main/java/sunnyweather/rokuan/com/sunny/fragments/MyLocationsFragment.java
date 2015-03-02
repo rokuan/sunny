@@ -81,6 +81,9 @@ public class MyLocationsFragment extends SunnyFragment {
         this.registerForContextMenu(weatherList);
     }
 
+    /**
+     * Updates the user favorite locations data
+     */
     private void updateLocations(){
         List<Place> cities = db.queryAllCities();
         weatherList.setAdapter(new PlaceAdapter(this.getActivity(), R.layout.weather_item, cities));

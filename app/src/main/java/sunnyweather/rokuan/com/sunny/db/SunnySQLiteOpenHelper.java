@@ -55,6 +55,10 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
+    /**
+     * Adds a new place to the database
+     * @param place the place to be added
+     */
     public void addCity(Place place){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -68,6 +72,11 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Inserts a city in the database at the given position
+     * @param position the position where to insert the city
+     * @param cityId
+     */
     public void insertCity(int position, Long cityId){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -81,12 +90,21 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Deletes an existing city
+     * @param cityId the city id
+     */
     public void deleteCity(Long cityId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(tables[CITIES], CITY_ID + " = ?", new String[]{ cityId.toString() });
         db.close();
     }
 
+    /**
+     * Tells whether or not a city whose ID is {@code cityId} does exist into the database
+     * @param cityId the city id
+     * @return true if the city does exist, false otherwise
+     */
     public boolean cityExists(Long cityId){
         SQLiteDatabase db = this.getReadableDatabase();
         boolean exists = false;
@@ -99,6 +117,10 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+    /**
+     * Returns all the cities the user has added into the database
+     * @return a list of all the cities the user has marked as favorites
+     */
     public List<Place> queryAllCities(){
         List<Place> places = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -119,6 +141,11 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
         return places;
     }
 
+    /**
+     * Queries all cities whose name contains {@code name}
+     * @param name the char sequence to match
+     * @return
+     */
     public List<Place> queryCities(String name){
         List<Place> places = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

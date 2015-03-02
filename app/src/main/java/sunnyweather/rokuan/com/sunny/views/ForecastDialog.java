@@ -17,7 +17,7 @@ import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.utils.Format;
 
 /**
- * Created by Christophe on 25/01/2015.
+ * A simple dialog that displays the content of a {@link ForecastInfo}
  */
 public class ForecastDialog extends DialogFragment {
     private ForecastInfo info;

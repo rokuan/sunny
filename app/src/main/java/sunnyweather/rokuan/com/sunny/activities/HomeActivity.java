@@ -16,7 +16,9 @@ import android.support.v4.widget.DrawerLayout;
 import sunnyweather.rokuan.com.sunny.fragments.SunnyFragment;
 import sunnyweather.rokuan.com.sunny.R;
 
-
+/**
+ * Main activity
+ */
 public class HomeActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 

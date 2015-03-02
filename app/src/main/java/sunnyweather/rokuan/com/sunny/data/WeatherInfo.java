@@ -11,7 +11,7 @@ import java.util.Date;
 import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 
 /**
- * Created by Christophe on 23/01/2015.
+ * A class which stores data retrieved from the weather part of the OpenWeather API
  */
 public class WeatherInfo {
     private Place place;
@@ -25,10 +25,19 @@ public class WeatherInfo {
     private Bitmap weatherImage;
     private String weatherDescription;
 
-    public WeatherInfo(){
+    /**
+     * Constructs an empty instance of WeatherInfo
+     */
+    protected WeatherInfo(){
 
     }
 
+    /**
+     * Builds a WeatherInfo object from the given JSONObject
+     * @param json the JSONObject to build the object from
+     * @return a new WeatherInfo instance with filled attributes
+     * @throws JSONException
+     */
     public static WeatherInfo buildFromJSON(JSONObject json) throws JSONException {
         WeatherInfo info = new WeatherInfo();
 

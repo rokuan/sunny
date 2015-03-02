@@ -10,7 +10,7 @@ import java.util.Date;
 import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 
 /**
- * Created by Christophe on 26/01/2015.
+ * Class to store data for a weather forecast obtained from the OpenWeather API
  */
 public class ForecastInfo {
     private static final int TEMP_DAY = 0;
@@ -32,6 +32,12 @@ public class ForecastInfo {
     private double clouds;
     private double rain;
 
+    /**
+     * Builds a new ForecastInfo from a given JSONObject
+     * @param json the JSON data to build the item from
+     * @return a ForecastInfo containing the required data found in {@code json}
+     * @throws JSONException when a required field is not found in {@code json}
+     */
     public static ForecastInfo buildFromJSON(JSONObject json) throws JSONException {
         ForecastInfo info = new ForecastInfo();
 

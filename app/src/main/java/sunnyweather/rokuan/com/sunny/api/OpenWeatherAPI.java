@@ -26,7 +26,7 @@ import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
 import sunnyweather.rokuan.com.sunny.utils.Utils;
 
 /**
- * Created by Christophe on 24/01/2015.
+ * OpenWeatherAPI class to retrieve data such as forecast, current temperature, ...
  */
 public class OpenWeatherAPI {
     private static final String OPENWEATHER_API_ADDRESS = "http://api.openweathermap.org/data/2.5/";
@@ -46,6 +46,12 @@ public class OpenWeatherAPI {
         return Utils.getBitmapFromURL(String.format(ICON_QUERY, iconName));
     }
 
+    /**
+     * Retrieves the first ID which matches the city name in argument
+     * @param context the android context to be used
+     * @param name the city name
+     * @return the OpenWeatherAPI ID, null if none was found
+     */
     public static Long getPlaceId(Context context, String name){
         JSONObject results = getJSON(context, String.format(PLACE_NAME_QUERY, name));
 
@@ -56,6 +62,12 @@ public class OpenWeatherAPI {
         }
     }
 
+    /**
+     * Find all places whose names start with {@code name}
+     * @param context the android context to be used
+     * @param name the name to query
+     * @return a list of the matching places
+     */
     public static List<Place> queryPlaces(Context context, String name){
         List<Place> results = new ArrayList<Place>();
         JSONObject jsonResults = getJSON(context, String.format(PLACE_NAME_QUERY, name));
@@ -78,10 +90,23 @@ public class OpenWeatherAPI {
         return results;
     }
 
+    /**
+     * Returns the forecast for a specific city denoted by its ID for 7 days
+     * @param context the android context to be used
+     * @param placeId the place id
+     * @return a list of 7 forecasts or null if an error occurred
+     */
     public static List<ForecastInfo> getWeekForecast(Context context, long placeId){
         return getForecast(context, placeId, 7);
     }
 
+    /**
+     * Returns the forecast for a specific city denoted by its ID for {@code count} days
+     * @param context the android context to be used
+     * @param placeId the place id
+     * @param count the number of days the forecast should cover
+     * @return a {@code count}-length list of forecasts or null if an error occurred
+     */
     public static List<ForecastInfo> getForecast(Context context, long placeId, int count){
         List<ForecastInfo> results = null;
 
@@ -112,6 +137,12 @@ public class OpenWeatherAPI {
         return results;
     }
 
+    /**
+     * Gets a single weather data for the specified city
+     * @param context the android context to be used
+     * @param placeId the city id
+     * @return a weather data or null if an error occurred
+     */
     public static WeatherInfo getWeather(Context context, long placeId){
         JSONObject result = getJSON(context, String.format(WEATHER_QUERY, placeId));
 
@@ -122,6 +153,12 @@ public class OpenWeatherAPI {
         }
     }
 
+    /**
+     * Gets a JSONObject from an http URL
+     * @param context the android context to be used
+     * @param address the http address to retrieve the JSON from
+     * @return a json data from the given address or null if an error occurred
+     */
     private static JSONObject getJSON(Context context, String address){
         ContentValues properties = new ContentValues();
         properties.put("x-api-key", getApiKey(context));

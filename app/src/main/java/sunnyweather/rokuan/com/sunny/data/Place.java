@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Christophe on 24/01/2015.
+ * Class that represents a city with its OpenWeather ID and name
  */
 public class Place {
     private Long id;

@@ -3,7 +3,7 @@ package sunnyweather.rokuan.com.sunny.data;
 import android.location.Location;
 
 /**
- * Created by LEBEAU Christophe on 01/02/2015.
+ * Class that contains info about a place location, such as latitude/longitude, the city name, and the city country
  */
 public class LocationInfo {
     private Location location;

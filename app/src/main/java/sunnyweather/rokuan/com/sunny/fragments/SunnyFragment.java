@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import sunnyweather.rokuan.com.sunny.activities.HomeActivity;
 
 /**
- * Created by Christophe on 27/01/2015.
+ * A basic fragment used
  */
 public abstract class SunnyFragment extends Fragment {
     public static final int HOME_FRAGMENT = 1;

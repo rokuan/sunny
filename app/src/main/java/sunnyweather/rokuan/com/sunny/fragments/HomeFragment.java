@@ -25,11 +25,12 @@ import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
 import sunnyweather.rokuan.com.sunny.data.LocationInfo;
 import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.utils.Utils;
 import sunnyweather.rokuan.com.sunny.views.ForecastDialog;
 import sunnyweather.rokuan.com.sunny.views.WeatherView;
 
 /**
- * Created by Christophe on 27/01/2015.
+ * The first fragment that displays the weather data for the current location
  */
 public class HomeFragment extends SunnyFragment implements View.OnClickListener {
     private static final int REFRESH_TIMEOUT = 20000;
@@ -115,6 +116,9 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
         }
     }*/
 
+    /**
+     * Starts the loading process
+     */
     private void startLoading(){
         // TODO:
         if(refreshButton != null) {
@@ -124,6 +128,10 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
         loadingView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Ends the loading process
+     * @param success the process result (true if everything went fine, false otherwise)
+     */
     private void endLoading(boolean success){
         // TODO: afficher des messages selon la reussite de l'operation
         loadingView.setVisibility(View.INVISIBLE);
@@ -133,6 +141,11 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
         }
     }
 
+    /**
+     * Render the weather data into the fragment
+     * @param place the current place
+     * @param results the weather results
+     */
     private void renderWeather(String place, List<ForecastInfo> results) {
         infos = results;
         locationText.setText(place);
@@ -142,13 +155,17 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
         }
     }
 
+    /*
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) this.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
+    }*/
 
+    /**
+     * Tries to find current user location
+     */
     private void getLocation() {
         new Thread(new Runnable(){
             @Override
@@ -199,7 +216,7 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
 
     @Override
     public void refresh() {
-        if (!isNetworkAvailable()) {
+        if (!Utils.isNetworkAvailable(this.getActivity())) {
             // TODO: afficher un message dans un layout
             Toast.makeText(this.getActivity(), "No connection available", Toast.LENGTH_SHORT).show();
             return;

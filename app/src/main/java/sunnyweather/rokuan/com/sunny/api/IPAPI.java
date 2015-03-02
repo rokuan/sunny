@@ -15,7 +15,7 @@ import sunnyweather.rokuan.com.sunny.data.LocationInfo;
 import sunnyweather.rokuan.com.sunny.utils.Utils;
 
 /**
- * Created by LEBEAU Christophe on 01/02/2015.
+ * Class containing methods to retrieve IP
  */
 public class IPAPI {
     public static LocationInfo getLocation(){

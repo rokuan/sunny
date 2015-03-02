@@ -10,7 +10,7 @@ import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
 import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
 
 /**
- * Created by Christophe on 23/01/2015.
+ * Class to render weather data into a view
  */
 public abstract class WeatherView extends RelativeLayout {
     //protected static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
