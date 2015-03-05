@@ -6,9 +6,9 @@
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10px"
+    android:layout_margin="5dp"
     android:descendantFocusability="blocksDescendants"
-    card_view:cardCornerRadius="4dp">
+    card_view:cardCornerRadius="5dp">
     <FrameLayout
         android:id="@+id/weather_item_top_layout"
         android:layout_width="match_parent"
@@ -17,11 +17,11 @@
         <TextView
             android:textColor="#FFFFFF"
             android:text="15°C"
-            android:padding="20px"
+            android:padding="20dp"
             android:textSize="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:textColor="#FFFFFF" android:textSize="24dp" android:padding="20px" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:gravity="right" android:text="Paris, France" />
+            android:textColor="#FFFFFF" android:textSize="24dp" android:padding="20dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom" android:gravity="right" android:text="Paris, France" />
     </FrameLayout>
 </android.support.v7.widget.CardView>

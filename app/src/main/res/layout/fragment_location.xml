@@ -9,14 +9,15 @@
         android:layout_height="wrap_content">
         <AutoCompleteTextView
             android:id="@+id/search_bar"
-            android:layout_marginLeft="10px"
-            android:layout_marginRight="10px"
+            android:hint="City name"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:singleLine="true"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content" />
         <ImageButton
-            android:src="@android:drawable/ic_menu_search"
+            android:src="@drawable/ic_menu_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

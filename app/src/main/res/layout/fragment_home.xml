@@ -28,7 +28,7 @@
             android:layout_width="match_parent">
             <TableLayout
                 android:id="@+id/location_weather_grid"
-                android:padding="5px"
+                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="*"
@@ -37,31 +37,31 @@
                     <sunnyweather.rokuan.com.sunny.views.FullWeatherView
                         android:layout_width="match_parent"
                         android:layout_span="2"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                 </TableRow>
                 <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                 </TableRow>
                 <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                 </TableRow>
                 <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                     <sunnyweather.rokuan.com.sunny.views.SimpleWeatherView
                         android:layout_width="match_parent"
-                        android:layout_height="256px" />
+                        android:layout_height="@dimen/home_weather_view_height" />
                 </TableRow>
             </TableLayout>
         </ScrollView>

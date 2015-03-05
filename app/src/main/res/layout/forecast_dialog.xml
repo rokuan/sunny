@@ -16,12 +16,12 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:padding="20px"
+            android:padding="20dp"
             android:singleLine="true"
             />
         <ImageButton
             android:id="@+id/forecast_dialog_close"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_menu_close_clear_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_gravity="top|right" />
     </LinearLayout>
@@ -31,7 +31,7 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="30px"
+            android:padding="25dp"
             android:stretchColumns="1">
 
             <!--
@@ -47,17 +47,17 @@
             private double clouds;
             private double rain;
             -->
-            <TableRow android:padding="10px">
+            <TableRow android:padding="10dp">
                 <TextView android:id="@+id/forecast_dialog_temperature" android:text="25°C" android:gravity="center" android:layout_span="2" android:layout_width="match_parent" />
             </TableRow>
             <TableRow>
-                <sunnyweather.rokuan.com.sunny.views.HeightSquareImageView android:id="@+id/forecast_dialog_icon" android:scaleType="fitCenter" android:layout_span="2" android:src="@drawable/ic_launcher" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="128px" />
+                <sunnyweather.rokuan.com.sunny.views.HeightSquareImageView android:id="@+id/forecast_dialog_icon" android:scaleType="fitCenter" android:layout_span="2" android:src="@drawable/ic_launcher" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="80dp" />
             </TableRow>
             <TableRow>
-                <TextView android:id="@+id/forecast_dialog_description" android:text="Partiellement nuageux" android:gravity="center" android:layout_span="2" android:padding="10px" />
+                <TextView android:id="@+id/forecast_dialog_description" android:text="Partiellement nuageux" android:gravity="center" android:layout_span="2" android:padding="5dp" />
             </TableRow>
             <TableRow>
-                <LinearLayout android:padding="20px" android:orientation="horizontal" android:layout_span="2" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <LinearLayout android:padding="20dp" android:orientation="horizontal" android:layout_span="2" android:layout_width="match_parent" android:layout_height="wrap_content">
                     <LinearLayout
                         android:gravity="center"
                         android:layout_width="0dip"
@@ -66,7 +66,7 @@
                         <ImageView
                             android:src="@drawable/ic_launcher"
                             android:layout_width="wrap_content"
-                            android:layout_height="64px" />
+                            android:layout_height="60dp" />
                         <TextView
                             android:id="@+id/forecast_dialog_sunrise"
                             android:text="7:40"
@@ -90,7 +90,7 @@
                         <ImageView
                             android:src="@drawable/ic_launcher"
                             android:layout_width="wrap_content"
-                            android:layout_height="64px" />
+                            android:layout_height="60dp" />
                     </LinearLayout>
                 </LinearLayout>
 
