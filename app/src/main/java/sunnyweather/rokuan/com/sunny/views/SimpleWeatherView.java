@@ -14,7 +14,7 @@ import sunnyweather.rokuan.com.sunny.utils.Format;
 /**
  * A view that displays a small part of the weather data
  */
-public class SimpleWeatherView extends WeatherView {
+public class SimpleWeatherView extends OldWeatherView {
     private ForecastInfo info;
 
     private TextView temperature;

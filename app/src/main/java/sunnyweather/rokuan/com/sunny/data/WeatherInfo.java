@@ -61,7 +61,7 @@ public class WeatherInfo {
             info.sunrise = new Date(sys.getLong("sunrise") * 1000);
             info.sunset = new Date(sys.getLong("sunset") * 1000);
         } catch (Exception e){
-            Log.e("Sunny - Weather (WInfo JSON)", e.getMessage());
+            Log.e("Sunny (WInfo JSON)", e.getMessage());
         }
 
         return info;

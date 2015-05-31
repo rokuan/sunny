@@ -12,14 +12,14 @@ import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
 /**
  * Class to render weather data into a view
  */
-public abstract class WeatherView extends RelativeLayout {
+public abstract class OldWeatherView extends RelativeLayout {
     //protected static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM");
 
-    public WeatherView(Context context) {
+    public OldWeatherView(Context context) {
         super(context);
     }
 
-    public WeatherView(Context context, AttributeSet attrs) {
+    public OldWeatherView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

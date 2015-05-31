@@ -2,6 +2,7 @@ package sunnyweather.rokuan.com.sunny.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,6 +17,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,14 +40,15 @@ import sunnyweather.rokuan.com.sunny.views.WeatherView;
 /**
  * The first fragment that displays the weather data for the current location
  */
-public class HomeFragment extends SunnyFragment implements View.OnClickListener {
+public class HomeFragment extends SunnyFragment implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final int REFRESH_TIMEOUT = 20000;
+    private static final String LOCATION_KEY = "location";
 
     private TextView locationText;
 
     private List<WeatherView> views;
     private List<ForecastInfo> infos;
-    private Handler handler;
 
     private View loadingView;
 
@@ -48,16 +57,24 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
 
     private MenuItem refreshButton;
 
+    private GoogleApiClient mGoogleApiClient;
+    private Location mCurrentLocation;
+    private LocationRequest mLocationRequest;
+    private boolean clientConnected = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null){
+            mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
+        }
 
         inflater = (LayoutInflater)this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.fragment_home, null);
         loadingView = mainView.findViewById(R.id.loading_frame);
         views = new LinkedList<WeatherView>();
         locationText = (TextView)mainView.findViewById(R.id.current_location);
-        handler = new Handler();
 
         TableLayout table = (TableLayout)mainView.findViewById(R.id.location_weather_grid);
 
@@ -78,6 +95,44 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
 
         }*/
         refresh();
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        stopLocationUpdates();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    protected void startLocationUpdates() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(30000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        if(clientConnected) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+        }
+    }
+
+    public Location getCurrentLocation(){
+        return mCurrentLocation;
     }
 
     @Override
@@ -109,12 +164,12 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
+
+    @Override
     public void onSaveInstanceState(Bundle bundle){
-        if(infos != null){
-            //bundle.putParcelableArray();
-        }
-    }*/
+        bundle.putParcelable(LOCATION_KEY, mCurrentLocation);
+        super.onSaveInstanceState(bundle);
+    }
 
     /**
      * Starts the loading process
@@ -126,6 +181,10 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
             refreshButton.setVisible(false);
         }
         loadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void endLoading(boolean success, ForecastData forecast){
+
     }
 
     /**
@@ -166,7 +225,7 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
     /**
      * Tries to find current user location
      */
-    private void getLocation() {
+    /*private void getLocation() {
         new Thread(new Runnable(){
             @Override
             public void run(){
@@ -203,6 +262,24 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener 
                 }
             }
         }).start();
+    }*/
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        clientConnected = true;
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        startLocationUpdates();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {}
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
     }
 
     @Override

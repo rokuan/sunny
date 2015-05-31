@@ -14,7 +14,7 @@ import sunnyweather.rokuan.com.sunny.utils.Format;
 /**
  * A view that tends to display an important part of the whole weather data
  */
-public class FullWeatherView extends WeatherView {
+public class FullWeatherView extends OldWeatherView {
     private ForecastInfo info;
 
     private TextView temperature;

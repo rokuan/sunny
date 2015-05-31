@@ -34,6 +34,7 @@ public class HomeActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private String[] mSectionTitles;
 
     private MenuItem updateButton;
 
@@ -51,6 +52,8 @@ public class HomeActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        mSectionTitles = this.getResources().getStringArray(R.array.drawer_sections);
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
     }
@@ -66,7 +69,7 @@ public class HomeActivity extends ActionBarActivity
     }
 
     public void onSectionAttached(int number) {
-        switch (number) {
+        /*switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
                 //mTitle = getString(R.string.app_name);
@@ -77,6 +80,11 @@ public class HomeActivity extends ActionBarActivity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+        }*/
+        try {
+            mTitle = mSectionTitles[number - 1];
+        }catch(Exception e){
+
         }
     }
 

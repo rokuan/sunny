@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -23,7 +24,8 @@
             android:id="@+id/forecast_dialog_close"
             android:src="@drawable/ic_menu_close_clear_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_gravity="top|right" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right" />
     </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
@@ -64,7 +66,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content">
                         <ImageView
-                            android:src="@drawable/ic_launcher"
+                            android:src="@drawable/sunrise"
                             android:layout_width="wrap_content"
                             android:layout_height="60dp" />
                         <TextView
@@ -88,7 +90,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content" />
                         <ImageView
-                            android:src="@drawable/ic_launcher"
+                            android:src="@drawable/sunset"
                             android:layout_width="wrap_content"
                             android:layout_height="60dp" />
                     </LinearLayout>
