@@ -1,4 +1,4 @@
-package sunnyweather.rokuan.com.sunny.data;
+package sunnyweather.rokuan.com.sunny.api.openweather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by LEBEAU Christophe on 31/05/15.
+ * Created by LEBEAU Christophe on 16/04/2015.
  */
 public class ForecastData {
     public static class SingleWeatherData {
@@ -91,6 +91,10 @@ public class ForecastData {
         public String getWeatherDescription() {
             return weatherDescription;
         }
+
+        /*public Bitmap getWeatherImage() {
+            return weatherImage;
+        }*/
 
         public String getWeatherIconName(){
             return weatherIconName;

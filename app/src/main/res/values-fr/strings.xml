@@ -3,7 +3,7 @@
     <string name="app_name">Sunny - Weather</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_refresh">Actualiser</string>
-    <string name="weather_api_key">c6257f4b44a211a56159c25313fc4818</string>
+    <string name="openweathermap_api_key">c6257f4b44a211a56159c25313fc4818</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string-array name="drawer_sections">

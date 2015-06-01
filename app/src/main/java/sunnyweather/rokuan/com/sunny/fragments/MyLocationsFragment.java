@@ -20,15 +20,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import sunnyweather.rokuan.com.sunny.R;
-import sunnyweather.rokuan.com.sunny.data.Place;
+import sunnyweather.rokuan.com.sunny.api.openweather.City;
+import sunnyweather.rokuan.com.sunny.api.openweather.OpenWeatherMapAPI;
 import sunnyweather.rokuan.com.sunny.db.SunnySQLiteOpenHelper;
-import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
+import sunnyweather.rokuan.com.sunny.views.CityWeatherView;
 import sunnyweather.rokuan.com.sunny.views.LocationWeatherView;
+import sunnyweather.rokuan.com.sunny.views.WeatherView;
 
 /**
  * Created by Christophe on 27/01/2015.
@@ -36,7 +44,7 @@ import sunnyweather.rokuan.com.sunny.views.LocationWeatherView;
 public class MyLocationsFragment extends SunnyFragment {
     private AutoCompleteTextView searchBar;
     //private PlaceAdapter placesAdapter;
-    private PlaceSuggestionAdapter suggestionsAdapter;
+    private CitySuggestionAdapter suggestionsAdapter;
     private ListView weatherList;
     private View mainView;
 
@@ -57,7 +65,7 @@ public class MyLocationsFragment extends SunnyFragment {
         searchBar.setThreshold(3);
         //searchBar.set
 
-        suggestionsAdapter = new PlaceSuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item);
+        suggestionsAdapter = new CitySuggestionAdapter(MyLocationsFragment.this.getActivity(), R.layout.place_result_item);
         suggestionsAdapter.setNotifyOnChange(true);
         searchBar.setAdapter(suggestionsAdapter);
 
@@ -85,8 +93,14 @@ public class MyLocationsFragment extends SunnyFragment {
      * Updates the user favorite locations data
      */
     private void updateLocations(){
-        List<Place> cities = db.queryAllCities();
-        weatherList.setAdapter(new PlaceAdapter(this.getActivity(), R.layout.weather_item, cities));
+        List<City> cities = db.queryAllCities();
+        List<CityWeatherView> views = new ArrayList<>(cities.size());
+
+        for(int i=0; i<cities.size(); i++){
+            views.add(new CityWeatherView(this.getActivity(), cities.get(i)));
+        }
+
+        weatherList.setAdapter(new CityWeatherAdapter(this.getActivity(), R.layout.weather_item, views));
     }
 
     @Override
@@ -114,8 +128,8 @@ public class MyLocationsFragment extends SunnyFragment {
         //info.id
         //info.position;
 
-        PlaceAdapter locationAdapter = (PlaceAdapter)weatherList.getAdapter();
-        Place p = locationAdapter.getItem(info.position);
+        /*PlaceAdapter locationAdapter = (PlaceAdapter)weatherList.getAdapter();
+        City p = locationAdapter.getItem(info.position);
 
         switch (item.getItemId()) {
             case R.id.delete_place:
@@ -131,7 +145,7 @@ public class MyLocationsFragment extends SunnyFragment {
 
             default:
                 break;
-        }
+        }*/
 
         return super.onContextItemSelected(item);
     }
@@ -141,15 +155,18 @@ public class MyLocationsFragment extends SunnyFragment {
         updateLocations();
     }
 
-    class PlaceSuggestionAdapter extends ArrayAdapter<Place> {
+    class CitySuggestionAdapter extends ArrayAdapter<City> {
         private LayoutInflater inflater;
         private SunnySQLiteOpenHelper db;
-        private List<Place> resultList = new ArrayList<>();
+        private List<City> resultList = new ArrayList<>();
+        private Context context;
 
-        public PlaceSuggestionAdapter(Context context, int resource) {
-            super(context, resource);
-            inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            db = new SunnySQLiteOpenHelper(context);
+        public CitySuggestionAdapter(Context c, int resource) {
+            super(c, resource);
+            inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            db = new SunnySQLiteOpenHelper(c);
+            context = c;
+
         }
 
         @Override
@@ -158,7 +175,7 @@ public class MyLocationsFragment extends SunnyFragment {
         }
 
         @Override
-        public Place getItem(int index) {
+        public City getItem(int index) {
             return resultList.get(index);
         }
 
@@ -169,11 +186,37 @@ public class MyLocationsFragment extends SunnyFragment {
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults filterResults = new FilterResults();
                     if (constraint != null) {
-                        resultList = OpenWeatherAPI.queryPlaces(PlaceSuggestionAdapter.this.getContext(), constraint.toString());
+                        SyncHttpClient client = new SyncHttpClient();
+
+                        client.get(OpenWeatherMapAPI.getCityQueryURL(constraint.toString()), OpenWeatherMapAPI.getAdditionalParameters(context), new JsonHttpResponseHandler(){
+
+                        });
+
+                        /*List<Place> results = new ArrayList<Place>();
+                        JSONObject jsonResults = getJSON(context, String.format(PLACE_NAME_QUERY, name));
+
+                        if(jsonResults != null){
+                            try {
+                                results = new ArrayList<Place>(jsonResults.getInt("count"));
+                                JSONArray array = jsonResults.getJSONArray("list");
+
+                                for(int i=0; i<array.length(); i++){
+                                    JSONObject element = array.getJSONObject(i);
+                                    results.add(Place.buildFromJSON(element));
+                                }
+                            } catch (JSONException e) {
+                                Log.e("Sunny (Place query)", e.getMessage());
+                                return results;
+                            }
+                        }
+
+                        return results;
+                        resultList = OpenWeatherMapAPI.queryPlaces(PlaceSuggestionAdapter.this.getContext(), constraint.toString());*/
 
                         filterResults.values = resultList;
                         filterResults.count = resultList.size();
                     }
+
                     return filterResults;
                 }
 
@@ -205,7 +248,7 @@ public class MyLocationsFragment extends SunnyFragment {
                 convertView.setBackgroundColor(Color.LTGRAY);
             }
 
-            final Place place = this.getItem(position);
+            final City place = this.getItem(position);
             TextView placeName = (TextView)convertView.findViewById(R.id.place_item_name);
             final ImageButton addPlace = (ImageButton)convertView.findViewById(R.id.place_item_add);
 
@@ -222,8 +265,8 @@ public class MyLocationsFragment extends SunnyFragment {
                         db.addCity(place);
                         addPlace.setVisibility(View.INVISIBLE);
                         try{
-                            PlaceAdapter placeAdapter = (PlaceAdapter)MyLocationsFragment.this.weatherList.getAdapter();
-                            placeAdapter.add(place);
+                            CityWeatherAdapter placeAdapter = (CityWeatherAdapter)MyLocationsFragment.this.weatherList.getAdapter();
+                            placeAdapter.addCity(place);
                             placeAdapter.notifyDataSetChanged();
                         }catch(Exception e){
                             MyLocationsFragment.this.refresh();
@@ -237,10 +280,10 @@ public class MyLocationsFragment extends SunnyFragment {
         }
     }
 
-    class PlaceAdapter extends ArrayAdapter<Place> {
+    /*class PlaceAdapter extends ArrayAdapter<City> {
         private LayoutInflater inflater;
 
-        public PlaceAdapter(Context context, int resource, List<Place> objects) {
+        public PlaceAdapter(Context context, int resource, List<City> objects) {
             super(context, resource, objects);
             inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -255,6 +298,19 @@ public class MyLocationsFragment extends SunnyFragment {
             //}
 
             return convertView;
+        }
+    }*/
+
+    class CityWeatherAdapter extends ArrayAdapter<CityWeatherView> {
+        //private LayoutInflater inflater;
+
+        public CityWeatherAdapter(Context context, int resource, List<CityWeatherView> objects) {
+            super(context, resource, objects);
+            //inflater = LayoutInflater.from(context);
+        }
+
+        public void addCity(City c){
+            this.add(new CityWeatherView(this.getContext(), c));
         }
     }
 }

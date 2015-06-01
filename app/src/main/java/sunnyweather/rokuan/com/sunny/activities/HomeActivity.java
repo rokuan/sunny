@@ -36,7 +36,7 @@ public class HomeActivity extends ActionBarActivity
     private CharSequence mTitle;
     private String[] mSectionTitles;
 
-    private MenuItem updateButton;
+    //private MenuItem updateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,56 +95,4 @@ public class HomeActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
         //actionBar.setTitle(R.string.app_name);
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.home, menu);
-            updateButton = menu.findItem(R.id.action_refresh);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id){
-            case R.id.action_refresh:
-                ((SunnyFragment)getSupportFragmentManager().findFragmentByTag(SUNNY_FRAGMENT_TAG)).refresh();
-                //updateData();
-                return true;
-
-            case R.id.action_settings:
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
 }

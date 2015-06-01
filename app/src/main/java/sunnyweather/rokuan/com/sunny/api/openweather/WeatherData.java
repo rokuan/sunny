@@ -1,4 +1,4 @@
-package sunnyweather.rokuan.com.sunny.data;
+package sunnyweather.rokuan.com.sunny.api.openweather;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.Date;
 
 /**
- * Created by LEBEAU Christophe on 31/05/15.
+ * Created by LEBEAU Christophe on 16/04/2015.
  */
 public class WeatherData {
     private City place;
@@ -38,7 +38,7 @@ public class WeatherData {
      * @return a new WeatherData instance with filled attributes
      * @throws JSONException
      */
-    public static WeatherData buildFromJSON(Context context, JSONObject json) throws JSONException {
+    public static WeatherData buildFromJSON(JSONObject json) throws JSONException {
         WeatherData info = new WeatherData();
 
         JSONObject main = json.getJSONObject("main");

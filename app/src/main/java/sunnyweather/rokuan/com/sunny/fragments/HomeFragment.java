@@ -1,59 +1,51 @@
 package sunnyweather.rokuan.com.sunny.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
-import java.util.LinkedList;
-import java.util.List;
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import sunnyweather.rokuan.com.sunny.R;
-import sunnyweather.rokuan.com.sunny.api.IPAPI;
-import sunnyweather.rokuan.com.sunny.data.ForecastInfo;
-import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
-import sunnyweather.rokuan.com.sunny.data.LocationInfo;
-import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
+import sunnyweather.rokuan.com.sunny.api.openweather.ForecastData;
+import sunnyweather.rokuan.com.sunny.api.openweather.ForecastDataResultCallback;
+import sunnyweather.rokuan.com.sunny.api.openweather.OpenWeatherMapAPI;
 import sunnyweather.rokuan.com.sunny.utils.Utils;
 import sunnyweather.rokuan.com.sunny.views.ForecastDialog;
-import sunnyweather.rokuan.com.sunny.views.WeatherView;
+import sunnyweather.rokuan.com.sunny.views.ForecastView;
 
 /**
  * The first fragment that displays the weather data for the current location
  */
 public class HomeFragment extends SunnyFragment implements View.OnClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ForecastDataResultCallback {
     private static final int REFRESH_TIMEOUT = 20000;
     private static final String LOCATION_KEY = "location";
 
-    private TextView locationText;
-
-    private List<WeatherView> views;
-    private List<ForecastInfo> infos;
-
-    private View loadingView;
-
     private View mainView;
     private LayoutInflater inflater;
+    //@InjectView(R.id.multi_state_view) protected MultiStateView dataFrame;
+    @InjectView(R.id.fragment_home_view_placeholder) protected ViewGroup forecastPlaceHolder;
 
     private MenuItem refreshButton;
 
@@ -61,6 +53,7 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
     private Location mCurrentLocation;
     private LocationRequest mLocationRequest;
     private boolean clientConnected = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -72,29 +65,11 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
 
         inflater = (LayoutInflater)this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mainView = inflater.inflate(R.layout.fragment_home, null);
-        loadingView = mainView.findViewById(R.id.loading_frame);
-        views = new LinkedList<WeatherView>();
-        locationText = (TextView)mainView.findViewById(R.id.current_location);
 
-        TableLayout table = (TableLayout)mainView.findViewById(R.id.location_weather_grid);
+        ButterKnife.inject(this, mainView);
 
-        for (int i = 0; i < table.getChildCount(); i++) {
-            TableRow row = (TableRow) table.getChildAt(i);
-
-            for (int j = 0; j < row.getChildCount(); j++) {
-                WeatherView weatherView = (WeatherView) row.getChildAt(j);
-                weatherView.setOnClickListener(this);
-                views.add(weatherView);
-            }
-        }
-
-        /*if(savedInstanceState == null || !savedInstanceState.containsKey("forecastData")){
-            // TODO: charger les donnees
-            refresh();
-        } else {
-
-        }*/
-        refresh();
+        //dataFrame.set
+        //refresh();
     }
 
     @Override
@@ -180,95 +155,52 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
             //refreshButton.setEnabled(false);
             refreshButton.setVisible(false);
         }
-        loadingView.setVisibility(View.VISIBLE);
     }
 
-    private void endLoading(boolean success, ForecastData forecast){
-
-    }
-
-    /**
-     * Ends the loading process
-     * @param success the process result (true if everything went fine, false otherwise)
-     */
     private void endLoading(boolean success){
-        // TODO: afficher des messages selon la reussite de l'operation
-        loadingView.setVisibility(View.INVISIBLE);
         if(refreshButton != null) {
-            //refreshButton.setEnabled(true);
+            //refreshButton.setEnabled(false);
             refreshButton.setVisible(true);
         }
     }
 
-    /**
-     * Render the weather data into the fragment
-     * @param place the current place
-     * @param results the weather results
-     */
-    private void renderWeather(String place, List<ForecastInfo> results) {
-        infos = results;
-        locationText.setText(place);
+    private void getForecastData(){
+        AsyncHttpClient client = new AsyncHttpClient();
 
-        for (int i = 0; i < results.size(); i++) {
-            views.get(i).setForecastContent(results.get(i));
-        }
-    }
-
-    /*
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) this.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }*/
-
-    /**
-     * Tries to find current user location
-     */
-    /*private void getLocation() {
-        new Thread(new Runnable(){
+        client.get(OpenWeatherMapAPI.getWeekForecastForLocationURL(this.getActivity(), getCurrentLocation()), OpenWeatherMapAPI.getAdditionalParameters(this.getActivity()), new JsonHttpResponseHandler() {
             @Override
-            public void run(){
+            public void onStart() {
+                HomeFragment.this.startLoading();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject result) {
                 try {
-                    final LocationInfo lInfo = IPAPI.getLocation();
-                    final Activity activity = HomeFragment.this.getActivity();
-                    Long countryId = OpenWeatherAPI.getPlaceId(activity, lInfo.getPlaceCode());
-
-                    if (countryId == null) {
-                        // TODO: afficher erreur etc
-                        handler.post(new Runnable(){
-                            public void run(){
-                                endLoading(false);
-                                Toast.makeText(activity, "Unable to resolve location", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        return;
-                    }
-
-                    final List<ForecastInfo> results = OpenWeatherAPI.getWeekForecast(activity, countryId);
-
-                    handler.post(new Runnable() {
-                        public void run() {
-                            renderWeather(lInfo.getPlaceCode(), results);
-                            endLoading(true);
-                        }
-                    });
-                }catch(Exception e){
-                    handler.post(new Runnable(){
-                        public void run(){
-                            endLoading(false);
-                        }
-                    });
+                    HomeFragment.this.onForecastDataResult(true, ForecastData.buildFromJSON(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    HomeFragment.this.onForecastDataResult(false, null);
                 }
             }
-        }).start();
-    }*/
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                HomeFragment.this.onForecastDataResult(false, null);
+            }
+
+            /*@Override
+            public void onFinish() {
+                HomeFragment.this.endLoading();
+            }*/
+        });
+    }
 
     @Override
     public void onConnected(Bundle connectionHint) {
         clientConnected = true;
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         startLocationUpdates();
+        getForecastData();
     }
 
     @Override
@@ -285,8 +217,6 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        return rootView;*/
         this.setHasOptionsMenu(true);
         return mainView;
     }
@@ -300,15 +230,27 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
         }
 
         startLoading();
-        getLocation();
+        getForecastData();
     }
 
     @Override
     public void onClick(View v) {
-        try{
+        /*try{
             ForecastDialog.newInstance(((WeatherView)v).getForecastContent()).show(this.getActivity().getSupportFragmentManager(), "FORECAST_DLG");
         } catch(Exception e){
             return;
+        }*/
+    }
+
+    @Override
+    public void onForecastDataResult(boolean success, ForecastData result) {
+        if(success){
+            forecastPlaceHolder.removeAllViews();
+            forecastPlaceHolder.addView(new ForecastView(this.getActivity(), result));
+        } else {
+            // TODO:
         }
+
+        endLoading(success);
     }
 }

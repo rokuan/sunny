@@ -6,12 +6,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v4.database.DatabaseUtilsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sunnyweather.rokuan.com.sunny.data.Place;
+import sunnyweather.rokuan.com.sunny.api.openweather.City;
 
 /**
  * Created by Christophe on 24/01/2015.
@@ -28,11 +27,13 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
 
     public static final String CITY_ID = "city_id";
     public static final String CITY_NAME = "city_name";
+    public static final String CITY_COUNTRY = "city_country";
     public static final String CITY_ORDER = "city_order";
 
     private static final String CITY_QUERY = "CREATE TABLE " + tables[CITIES] + "(" +
             CITY_ID + " INTEGER PRIMARY KEY, " +
             CITY_NAME + " TEXT UNIQUE NOT NULL, " +
+            CITY_COUNTRY + " VARCHAR(2) NOT NULL, " +
             CITY_ORDER + " INTEGER UNIQUE NOT NULL" +
             ")";
 
@@ -59,12 +60,13 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
      * Adds a new place to the database
      * @param place the place to be added
      */
-    public void addCity(Place place){
+    public void addCity(City place){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(CITY_ID, place.getId());
         values.put(CITY_NAME, place.getName());
+        values.put(CITY_COUNTRY, place.getCountry());
         // TOCHECK: quand on atteint le nombre max de locations
         values.put(CITY_ORDER, (int)DatabaseUtils.queryNumEntries(db, tables[CITIES]));
 
@@ -107,7 +109,7 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     public boolean cityExists(Long cityId){
         SQLiteDatabase db = this.getReadableDatabase();
-        boolean exists = false;
+        boolean exists;
         Cursor results = db.query(tables[CITIES], null, CITY_ID + " = ?", new String[]{ cityId.toString() }, null, null, null);
 
         exists = (results.getCount() > 0);
@@ -121,17 +123,16 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
      * Returns all the cities the user has added into the database
      * @return a list of all the cities the user has marked as favorites
      */
-    public List<Place> queryAllCities(){
-        List<Place> places = new ArrayList<>();
+    public List<City> queryAllCities(){
+        List<City> places = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor results = db.query(tables[CITIES], null, null, null, null, null, CITY_ORDER + " ASC");
 
-        if(results.getCount() > 0){
+        if(results.moveToFirst()){
             places = new ArrayList<>(results.getCount());
-            results.moveToFirst();
 
             while(!results.isAfterLast()){
-                places.add(Place.buildFromCursor(results));
+                places.add(City.buildFromCursor(results));
                 results.moveToNext();
             }
         }
@@ -146,17 +147,16 @@ public class SunnySQLiteOpenHelper extends SQLiteOpenHelper {
      * @param name the char sequence to match
      * @return
      */
-    public List<Place> queryCities(String name){
-        List<Place> places = new ArrayList<>();
+    public List<City> queryCities(String name){
+        List<City> places = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor results = db.query(tables[CITIES], null, CITY_NAME + " LIKE %?%", new String[]{ name }, null, null, CITY_ORDER + " ASC");
 
-        if(results.getCount() > 0){
+        if(results.moveToFirst()){
             places = new ArrayList<>(results.getCount());
-            results.moveToFirst();
 
             while(!results.isAfterLast()){
-                places.add(Place.buildFromCursor(results));
+                places.add(City.buildFromCursor(results));
                 results.moveToNext();
             }
         }

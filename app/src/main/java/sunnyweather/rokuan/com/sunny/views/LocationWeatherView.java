@@ -1,28 +1,15 @@
 package sunnyweather.rokuan.com.sunny.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-
-import sunnyweather.rokuan.com.sunny.R;
-import sunnyweather.rokuan.com.sunny.api.WikipediaAPI;
-import sunnyweather.rokuan.com.sunny.data.Place;
-import sunnyweather.rokuan.com.sunny.data.WeatherInfo;
-import sunnyweather.rokuan.com.sunny.api.OpenWeatherAPI;
-import sunnyweather.rokuan.com.sunny.utils.Format;
 
 /**
  * Created by LEBEAU Christophe on 29/01/2015.
  */
-public class LocationWeatherView extends LinearLayout implements View.OnClickListener {
-    private Place place;
+public class LocationWeatherView extends LinearLayout
+        //implements View.OnClickListener
+        {
+    /*private Place place;
     private static final SimpleDateFormat sunFormat = new SimpleDateFormat("HH:mm");
     private static final String temperatureFormat = "%.2f";
 
@@ -40,17 +27,17 @@ public class LocationWeatherView extends LinearLayout implements View.OnClickLis
 
     private WeatherInfo infos;
 
-    private Handler handler;
+    private Handler handler;*/
 
     public LocationWeatherView(Context context) {
         super(context);
         initComponent();
     }
 
-    public LocationWeatherView(Context context, Place p){
+    /*public LocationWeatherView(Context context, Place p){
         this(context);
         this.place = p;
-    }
+    }*/
 
     /*public LocationWeatherView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,7 +49,7 @@ public class LocationWeatherView extends LinearLayout implements View.OnClickLis
     }*/
 
     private void initComponent(){
-        handler = new Handler();
+        /*handler = new Handler();
 
         LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.weather_item, this);
@@ -80,12 +67,12 @@ public class LocationWeatherView extends LinearLayout implements View.OnClickLis
         locationPressure = (TextView)this.findViewById(R.id.weather_item_pressure);
         locationWind = (TextView)this.findViewById(R.id.weather_item_wind);
         locationSunrise = (TextView)this.findViewById(R.id.weather_item_sunrise);
-        locationSunset = (TextView)this.findViewById(R.id.weather_item_sunset);
+        locationSunset = (TextView)this.findViewById(R.id.weather_item_sunset);*/
 
         // TODO: ajouter le nom de la ville sur loadingFrame/noDataFrame
     }
 
-    public void refreshData(){
+    /*public void refreshData(){
         if(place == null){
             return;
         }
@@ -166,5 +153,5 @@ public class LocationWeatherView extends LinearLayout implements View.OnClickLis
                 refreshData();
                 break;
         }
-    }
+    }*/
 }
