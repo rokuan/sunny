@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -31,13 +30,13 @@ import sunnyweather.rokuan.com.sunny.api.openweather.ForecastData;
 import sunnyweather.rokuan.com.sunny.api.openweather.ForecastDataResultCallback;
 import sunnyweather.rokuan.com.sunny.api.openweather.OpenWeatherMapAPI;
 import sunnyweather.rokuan.com.sunny.utils.Utils;
-import sunnyweather.rokuan.com.sunny.views.ForecastDialog;
 import sunnyweather.rokuan.com.sunny.views.ForecastView;
 
 /**
  * The first fragment that displays the weather data for the current location
  */
-public class HomeFragment extends SunnyFragment implements View.OnClickListener,
+public class HomeFragment extends SunnyFragment implements
+        //View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ForecastDataResultCallback {
     private static final int REFRESH_TIMEOUT = 20000;
     private static final String LOCATION_KEY = "location";
@@ -167,7 +166,7 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
     private void getForecastData(){
         AsyncHttpClient client = new AsyncHttpClient();
 
-        client.get(OpenWeatherMapAPI.getWeekForecastForLocationURL(this.getActivity(), getCurrentLocation()), OpenWeatherMapAPI.getAdditionalParameters(this.getActivity()), new JsonHttpResponseHandler() {
+        client.get(OpenWeatherMapAPI.getWeekForecastForLocationURL(getCurrentLocation()), OpenWeatherMapAPI.getAdditionalParameters(this.getActivity()), new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 HomeFragment.this.startLoading();
@@ -233,14 +232,14 @@ public class HomeFragment extends SunnyFragment implements View.OnClickListener,
         getForecastData();
     }
 
-    @Override
+    /*@Override
     public void onClick(View v) {
-        /*try{
+        try{
             ForecastDialog.newInstance(((WeatherView)v).getForecastContent()).show(this.getActivity().getSupportFragmentManager(), "FORECAST_DLG");
         } catch(Exception e){
             return;
-        }*/
-    }
+        }
+    }*/
 
     @Override
     public void onForecastDataResult(boolean success, ForecastData result) {

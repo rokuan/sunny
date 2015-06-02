@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +34,7 @@ import java.util.List;
 import sunnyweather.rokuan.com.sunny.R;
 import sunnyweather.rokuan.com.sunny.api.openweather.City;
 import sunnyweather.rokuan.com.sunny.api.openweather.OpenWeatherMapAPI;
+import sunnyweather.rokuan.com.sunny.api.openweather.WeatherData;
 import sunnyweather.rokuan.com.sunny.db.SunnySQLiteOpenHelper;
 import sunnyweather.rokuan.com.sunny.views.CityWeatherView;
 import sunnyweather.rokuan.com.sunny.views.LocationWeatherView;
@@ -158,7 +160,7 @@ public class MyLocationsFragment extends SunnyFragment {
     class CitySuggestionAdapter extends ArrayAdapter<City> {
         private LayoutInflater inflater;
         private SunnySQLiteOpenHelper db;
-        private List<City> resultList = new ArrayList<>();
+        private List<City> resultsList = new ArrayList<>();
         private Context context;
 
         public CitySuggestionAdapter(Context c, int resource) {
@@ -171,12 +173,12 @@ public class MyLocationsFragment extends SunnyFragment {
 
         @Override
         public int getCount() {
-            return resultList.size();
+            return resultsList.size();
         }
 
         @Override
         public City getItem(int index) {
-            return resultList.get(index);
+            return resultsList.get(index);
         }
 
         @Override
@@ -185,11 +187,31 @@ public class MyLocationsFragment extends SunnyFragment {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults filterResults = new FilterResults();
+
                     if (constraint != null) {
                         SyncHttpClient client = new SyncHttpClient();
 
                         client.get(OpenWeatherMapAPI.getCityQueryURL(constraint.toString()), OpenWeatherMapAPI.getAdditionalParameters(context), new JsonHttpResponseHandler(){
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject result) {
+                                try {
+                                    resultsList = new ArrayList<City>(result.getInt("count"));
+                                    JSONArray array = result.getJSONArray("list");
 
+                                    for(int i=0; i<array.length(); i++){
+                                        JSONObject element = array.getJSONObject(i);
+                                        resultsList.add(City.buildFromJSON(element));
+                                    }
+                                } catch (JSONException e) {
+                                    Log.e("Sunny (Place query)", e.getMessage());
+                                    // TODO
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                // TODO:
+                            }
                         });
 
                         /*List<Place> results = new ArrayList<Place>();
@@ -213,8 +235,8 @@ public class MyLocationsFragment extends SunnyFragment {
                         return results;
                         resultList = OpenWeatherMapAPI.queryPlaces(PlaceSuggestionAdapter.this.getContext(), constraint.toString());*/
 
-                        filterResults.values = resultList;
-                        filterResults.count = resultList.size();
+                        filterResults.values = resultsList;
+                        filterResults.count = resultsList.size();
                     }
 
                     return filterResults;
@@ -252,7 +274,7 @@ public class MyLocationsFragment extends SunnyFragment {
             TextView placeName = (TextView)convertView.findViewById(R.id.place_item_name);
             final ImageButton addPlace = (ImageButton)convertView.findViewById(R.id.place_item_add);
 
-            placeName.setText(place.getName());
+            placeName.setText(place.toString());
 
             if(db.cityExists(place.getId())){
                 addPlace.setVisibility(View.INVISIBLE);
@@ -302,15 +324,26 @@ public class MyLocationsFragment extends SunnyFragment {
     }*/
 
     class CityWeatherAdapter extends ArrayAdapter<CityWeatherView> {
-        //private LayoutInflater inflater;
+        private List<CityWeatherView> views = new ArrayList<>();
 
         public CityWeatherAdapter(Context context, int resource, List<CityWeatherView> objects) {
             super(context, resource, objects);
-            //inflater = LayoutInflater.from(context);
+            views.addAll(objects);
+        }
+
+        @Override
+        public int getCount(){
+            return views.size();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent){
+            return views.get(position);
         }
 
         public void addCity(City c){
-            this.add(new CityWeatherView(this.getContext(), c));
+            views.add(new CityWeatherView(this.getContext(), c));
+            this.notifyDataSetChanged();
         }
     }
 }

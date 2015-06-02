@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="25dp"
-            android:stretchColumns="1">
+            android:stretchColumns="*">
 
             <!--
             private Date date;
@@ -50,7 +50,8 @@
             private double rain;
             -->
             <TableRow android:padding="10dp">
-                <TextView android:id="@+id/forecast_dialog_temperature" android:text="25°C" android:gravity="center" android:layout_span="2" android:layout_width="match_parent" />
+                <TextView android:id="@+id/forecast_dialog_max_temperature" android:textSize="15sp" android:textColor="#000000" android:text="25°C" android:gravity="center" android:layout_width="match_parent" />
+                <TextView android:id="@+id/forecast_dialog_min_temperature" android:text="10°C" android:gravity="center" android:layout_width="match_parent" />
             </TableRow>
             <TableRow>
                 <sunnyweather.rokuan.com.sunny.views.HeightSquareImageView android:id="@+id/forecast_dialog_icon" android:scaleType="fitCenter" android:layout_span="2" android:src="@drawable/ic_launcher" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="80dp" />
@@ -98,15 +99,15 @@
 
             </TableRow>
             <TableRow>
-                <TextView android:text="Pressure" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:text="@string/pressure_field" android:layout_width="match_parent" android:layout_height="wrap_content" />
                 <TextView android:id="@+id/forecast_dialog_pressure" android:gravity="center" android:text="1040Pa" android:layout_width="match_parent" android:layout_height="wrap_content" />
             </TableRow>
             <TableRow>
-                <TextView android:text="Humidity" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:text="@string/humidity_field" android:layout_width="match_parent" android:layout_height="wrap_content" />
                 <TextView android:id="@+id/forecast_dialog_humidity" android:gravity="center" android:text="96%" android:layout_width="match_parent" android:layout_height="wrap_content" />
             </TableRow>
             <TableRow>
-                <TextView android:text="Wind" android:layout_width="match_parent" android:layout_height="wrap_content" />
+                <TextView android:text="@string/wind_field" android:layout_width="match_parent" android:layout_height="wrap_content" />
                 <TextView android:id="@+id/forecast_dialog_wind" android:gravity="center" android:text="10Km/H" android:layout_width="match_parent" android:layout_height="wrap_content" />
             </TableRow>
             <!-- <TableRow>

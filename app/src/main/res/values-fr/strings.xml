@@ -16,4 +16,8 @@
     <string name="navigation_drawer_close">Ferme le volet de navigation</string>
     <string name="today">Aujourd\'hui</string>
     <string name="loading">Chargement ...</string>
+
+    <string name="pressure_field">Pression</string>
+    <string name="humidity_field">Humidité</string>
+    <string name="wind_field">Vent</string>
 </resources>
